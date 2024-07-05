@@ -16,10 +16,11 @@ public class KeyValue {
         this.minimum = minm;
         this.maximum = maxm;
         this.sum = sums;
+        this.count = c;
     }
 
     @Override
     public String toString(){
-        return "" + minimum + "," + sum/count + "," + maximum;
+        return "" + minimum + "," + sum/count + "," + maximum + "," + count;
     }
 }
