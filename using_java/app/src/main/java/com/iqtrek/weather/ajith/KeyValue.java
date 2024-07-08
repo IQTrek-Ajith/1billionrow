@@ -1,3 +1,5 @@
+package com.iqtrek.weather.ajith;
+
 public class KeyValue {
     public float minimum;
     public float maximum;

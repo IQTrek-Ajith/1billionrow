@@ -1,3 +1,5 @@
+package com.iqtrek.weather.ajith;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.BufferedWriter;
@@ -17,8 +19,8 @@ class OneBillion {
     public static void main(String[] args) {
         final int numOfCores = Runtime.getRuntime().availableProcessors();
         int rowCount = 0;
-        final int BATCH_SIZE = 4000;
-        String csvFile = "/home/user/Learning/1billion/data/weather_stations.csv";
+        final int BATCH_SIZE = 8000;
+        String csvFile = "./app/data/weather_stations.csv";
         ExecutorService executor = Executors.newFixedThreadPool(numOfCores);
         long startTime = System.nanoTime();
 
@@ -40,11 +42,15 @@ class OneBillion {
             e.printStackTrace();
         }
 
-        executor.shutdown();
+
         try {
             System.out.println("Waiting for tasks to complete...");
             while (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
                 System.out.println("Still waiting... Processed batches: " + processedBatches.get() + "/" + totalBatches.get());
+                if(processedBatches.get() == totalBatches.get()) {
+                    executor.shutdownNow();
+                    break;
+                }
             }
             System.out.println("All tasks completed. Waiting for latches...");
             for (int i = 0; i < latches.size(); i++) {
@@ -58,13 +64,13 @@ class OneBillion {
             System.out.println("Interrupted while waiting for tasks to complete.");
             executor.shutdownNow();
         }
-
+        executor.shutdown();
         long endTime = System.nanoTime();
         long executionTime = endTime - startTime;
         double executionTimeSeconds = (double) executionTime / 1_000_000_000;
         System.out.println("Number of CPU cores: " + numOfCores + ", Row count: " + rowCount + 
                            ", time: " + executionTime + ", time in sec: " + executionTimeSeconds);
-        System.out.println("Map size: " + map.size());
+        System.out.println("Out size: " + map.size());
         printbatch();
     }
 
